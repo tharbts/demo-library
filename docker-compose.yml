@@ -1,0 +1,30 @@
+services:
+    library-db:
+        image: "postgres:13.2-alpine"
+        container_name: library-db
+        volumes: 
+            - ./DATA:/var/lib/postgresql/data
+        ports: 
+            - 5432:5432
+        environment: 
+            - POSTGRES_DB=library
+            - POSTGRES_USER=library
+            - POSTGRES_PASSWORD=library
+
+    library-api:
+        image: "openjdk:11-slim"
+        stdin_open: true
+        tty: true
+        container_name: library-api
+        volumes: 
+            - ./API:/library
+        working_dir: /library
+        ports: 
+            - 8080:8080
+        environment:
+            - DB_SERVER=library-db
+            - POSTGRES_DB=library
+            - POSTGRES_USER=library
+            - POSTGRES_PASSWORD=library
+        links: 
+            - library-db
